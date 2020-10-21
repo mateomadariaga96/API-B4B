@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Business = require("./Business.model");
+const Opportunity = require("./Opportunity.model")
 
-const productSchema = new mongoose.Schema(
+const proposalSchema = new mongoose.Schema(
   {
     description: {
       type: String,
@@ -11,13 +12,15 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Name is required"],
     },
-    price: {
-      type: String,
-      required: [true, "Price is required"],
+    status: {
+      type: String, 
+      enum : ['pending', 'accepted', 'denied'], 
+      default: 'pending' 
     },
-    paytype: {
-      type: String,
-      enum: ["Monthly", "Single Pay", "Yearly"],
+    opportunity: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Opportunity",
     },
     business: {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,6 +43,6 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-const Product = mongoose.model("Product", productSchema);
+const Proposal = mongoose.model("Proposal", proposalSchema);
 
-module.exports = Product;
+module.exports = Proposal;

@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Business = require("./Business.model");
+const Like = require("./Like.model");
 
-const productSchema = new mongoose.Schema(
+const opportunitySchema = new mongoose.Schema(
   {
     description: {
       type: String,
@@ -11,13 +12,18 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Name is required"],
     },
-    price: {
-      type: String,
-      required: [true, "Price is required"],
+    start: {
+      type: Date,
+      default: "Strating date not defined yet",
     },
-    paytype: {
+    budget: {
       type: String,
-      enum: ["Monthly", "Single Pay", "Yearly"],
+      default: "No budget defined for this opportunity",
+    },
+    duration: {
+      type: String,
+      enum: ["< 1 month", "1 to 3 months", "> 3 Months"],
+	  default: "No duration defined for this opportunity",
     },
     business: {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,6 +46,13 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-const Product = mongoose.model("Product", productSchema);
+userSchema.virtual('likes', {
+  ref: 'Like',
+  localField: '_id',
+  //foreignField: 'Business',
+  justOne: false,
+});
 
-module.exports = Product;
+const Opportunity = mongoose.model("Opportunity", opportunitySchema);
+
+module.exports = Opportunity;
