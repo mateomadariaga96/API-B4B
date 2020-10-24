@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Business = require("./Business.model");
-const Like = require("./Like.model");
+const OppLike = require("./OppLike.model");
 
 const opportunitySchema = new mongoose.Schema(
   {
@@ -13,7 +13,7 @@ const opportunitySchema = new mongoose.Schema(
       required: [true, "Name is required"],
     },
     start: {
-      type: Date,
+      type: String,
       default: "Strating date not defined yet",
     },
     budget: {
@@ -46,10 +46,10 @@ const opportunitySchema = new mongoose.Schema(
   }
 );
 
-userSchema.virtual('likes', {
-  ref: 'Like',
+opportunitySchema.virtual('likes', {
+  ref: 'OppLike',
   localField: '_id',
-  //foreignField: 'Business',
+  foreignField: 'Opportunity',
   justOne: false,
 });
 

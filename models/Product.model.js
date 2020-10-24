@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Business = require("./Business.model");
+const ProductLike = require("./ProductLike.model");
 
 const productSchema = new mongoose.Schema(
   {
@@ -39,6 +40,13 @@ const productSchema = new mongoose.Schema(
     },
   }
 );
+
+productSchema.virtual('productlikes', {
+  ref: 'ProductLike',
+  localField: '_id',
+  foreignField: 'Product',
+  justOne: false,
+});
 
 const Product = mongoose.model("Product", productSchema);
 

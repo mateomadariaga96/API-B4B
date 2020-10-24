@@ -8,6 +8,8 @@ const Contact = require("./Contact.model");
 const Opportunity = require("./Opportunity.model");
 const Proposal = require("./Proposal.model");
 const Chat = require("./Chat.model");
+const OppLike = require("./OppLike.model");
+const ProductLike = require("./ProductLike.model")
 
 
 const businessSchema = new mongoose.Schema(
@@ -24,7 +26,7 @@ const businessSchema = new mongoose.Schema(
     },
      logo: {
       type: String,
-      default: 'https://via.placeholder.com/150'
+      default: 'https://via.placeholder.com/150',
     },
     name: {
       type: String,
@@ -36,13 +38,11 @@ const businessSchema = new mongoose.Schema(
     },
     size: {
       type: String,
-      enum: ["0 to 10 employees", "10 to 50 employees", "50 to 250 employees", "+250 employees"]
-      required: [true, "Company's size is required"],
+      enum: ["0 to 10 employees", "10 to 50 employees", "50 to 250 employees", "+250 employees"],
     },
     sector: {
       type: String,
-      enum: ["AI/ML", "Blockchain", "Cybersecurity", "Digital Marketing", "Industry 4.0 & Automation", "IoT", "RPA", "Software Development", "Telecoms", "QA & Testing"]
-      required: [true, "Tell us about your sector"],
+      enum: ["AI/ML", "Blockchain", "Cybersecurity", "Digital Marketing", "Industry 4.0 & Automation", "IoT", "RPA", "Software Development", "Telecoms", "QA & Testing"],
     },
     description: {
       type: String,
@@ -52,7 +52,6 @@ const businessSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: ["Service provider", "Product vendor"],
-      required: [true, "Business type is required"]
     },
     web: {
       type: String,
@@ -61,7 +60,7 @@ const businessSchema = new mongoose.Schema(
     linkedin: {
       type: String,
       default: "No LinkedIn yet",
-    }
+    },
   },
   {
     timestamps: true,
@@ -79,27 +78,39 @@ const businessSchema = new mongoose.Schema(
   }
 );
 
-userSchema.virtual('contacts', {
+businessSchema.virtual('likes', {
+  ref: 'OppLike',
+  localField: '_id',
+  foreignField: 'Business'
+});
+
+businessSchema.virtual('productlikes', {
+  ref: 'ProductLike',
+  localField: '_id',
+  foreignField: 'Business'
+});
+
+/* businessSchema.virtual('contacts', {
   ref: 'Contact',
   localField: '_id',
   justOne: false,
 });
 
-userSchema.virtual('products', {
+businessSchema.virtual('products', {
   ref: 'Product',
   localField: '_id',
   foreignField: 'Business',
   justOne: false,
 });
 
-userSchema.virtual('opportunities', {
+businessSchema.virtual('opportunities', {
   ref: 'Opportunity',
   localField: '_id',
   foreignField: 'Business',
   justOne: false,
-});
+}); */
 
-userSchema.pre("save", function (next) {
+businessSchema.pre("save", function (next) {
   const user = this;
 
   if (user.isModified("password")) {
@@ -118,7 +129,7 @@ userSchema.pre("save", function (next) {
   }
 });
 
-userSchema.methods.checkPassword = function (password) {
+businessSchema.methods.checkPassword = function (password) {
   console.log(password);
   console.log(this.password);
   return bcrypt.compare(password, this.password);

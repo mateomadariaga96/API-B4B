@@ -17,10 +17,14 @@ const contactSchema = new mongoose.Schema(
     linkedin: {
       type: String,
       default: "No LinkedIn profile"
-	},
-	toJSON: {
+	}
+  },
+	  {
+    timestamps: true,
+    toJSON: {
       transform: (document, toReturn) => {
         toReturn.id = document._id;
+        delete toReturn.password;
         delete toReturn.__v;
         delete toReturn._id;
         delete toReturn.createdAt;
