@@ -10,6 +10,8 @@ const Proposal = require("./Proposal.model");
 const Chat = require("./Chat.model");
 const OppLike = require("./OppLike.model");
 const ProductLike = require("./ProductLike.model")
+const Comment = require("./Comment.model");
+const Review = require("./Review.model");
 
 
 const businessSchema = new mongoose.Schema(
@@ -90,25 +92,41 @@ businessSchema.virtual('productlikes', {
   foreignField: 'Business'
 });
 
-/* businessSchema.virtual('contacts', {
+businessSchema.virtual('comments', {
+  ref: 'Comments',
+  localField: '_id',
+  foreignField: 'Business'
+});
+
+  businessSchema.virtual('contacts', {
   ref: 'Contact',
   localField: '_id',
-  justOne: false,
+  foreignField: 'Business'
 });
 
 businessSchema.virtual('products', {
   ref: 'Product',
   localField: '_id',
   foreignField: 'Business',
-  justOne: false,
+});
+
+businessSchema.virtual('proposals', {
+  ref: 'Proposal',
+  localField: '_id',
+  foreignField: 'Business',
 });
 
 businessSchema.virtual('opportunities', {
   ref: 'Opportunity',
   localField: '_id',
   foreignField: 'Business',
-  justOne: false,
-}); */
+});
+
+businessSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'Business',
+});
 
 businessSchema.pre("save", function (next) {
   const user = this;

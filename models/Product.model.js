@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Business = require("./Business.model");
 const ProductLike = require("./ProductLike.model");
+const Review = require("./Review.model");
+const Rating = require("./Rating.model");
 
 const productSchema = new mongoose.Schema(
   {
@@ -20,6 +22,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       enum: ["Monthly", "Single Pay", "Yearly"],
     },
+    image: {
+      type: String,
+      default: 'https://via.placeholder.com/150',
+    },
+    web: String,
     business: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -45,7 +52,18 @@ productSchema.virtual('productlikes', {
   ref: 'ProductLike',
   localField: '_id',
   foreignField: 'Product',
-  justOne: false,
+});
+
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'Product',
+});
+
+productSchema.virtual('ratings', {
+  ref: 'Rating',
+  localField: '_id',
+  foreignField: 'Product',
 });
 
 const Product = mongoose.model("Product", productSchema);

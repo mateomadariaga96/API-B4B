@@ -17,7 +17,12 @@ const contactSchema = new mongoose.Schema(
     linkedin: {
       type: String,
       default: "No LinkedIn profile"
-	}
+	},
+	business: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Business",
+    },
   },
 	  {
     timestamps: true,

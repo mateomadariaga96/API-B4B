@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 
-const ratingSchema = new mongoose.Schema({
-  score: {
-	  type: Number,
-	  enum: [1, 2, 3, 4, 5]
-  },
+const reviewSchema = new mongoose.Schema({
+  text: String,
   business: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Business',
@@ -28,6 +25,6 @@ const ratingSchema = new mongoose.Schema({
   }
 })
 
-const Rating = mongoose.model('Rating', ratingSchema);
+const Review = mongoose.model('Review', reviewSchema);
 
-module.exports = Rating;
+module.exports = Review;

@@ -1,18 +1,15 @@
 const mongoose = require('mongoose');
 
-const ratingSchema = new mongoose.Schema({
-  score: {
-	  type: Number,
-	  enum: [1, 2, 3, 4, 5]
-  },
+const commentSchema = new mongoose.Schema({
+  text: String,
   business: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Business',
     required: true
   },
-  product: {
+  opportunity: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
+    ref: 'Opportunity',
     required: true
   }
 }, {
@@ -28,6 +25,6 @@ const ratingSchema = new mongoose.Schema({
   }
 })
 
-const Rating = mongoose.model('Rating', ratingSchema);
+const Comment = mongoose.model('Comment', commentSchema);
 
-module.exports = Rating;
+module.exports = Comment;

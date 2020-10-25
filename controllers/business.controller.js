@@ -27,6 +27,86 @@ module.exports.list = (req, res, next) => {
     .catch((e) => next(e));
 };
 
+module.exports.profile = (req, res, next) => {
+  Business.findOne({ name: req.params.name })
+    .populate({
+      path: 'opportunities',
+      populate: {
+        path: 'business'
+      }
+    })
+    .populate({
+      path: 'products',
+      populate: {
+        path: 'business'
+      }
+    })
+    .populate({
+      path: 'likes',
+      populate: {
+        path: 'business'
+      }
+    })
+    .populate({
+      path: 'productlikes',
+      populate: {
+        path: 'business'
+      }
+    })
+    .populate({
+      path: 'proposals',
+      populate: {
+        path: 'business'
+      }
+    })
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'business'
+      }
+    })
+    .populate({
+      path: 'contacts',
+      populate: {
+        path: 'business'
+      }
+    })
+    .populate({
+      path: 'reviews',
+      populate: {
+        path: 'business'
+      }
+    })
+    .then(business => {
+      if (business) {
+        res.json(business)
+      } else {
+        throw createError(404, 'business not found');
+      }
+    })
+    .catch(next)
+}
+
+//update
+//delete
+
+module.exports.createContact = (req, res, next) => {
+
+  const contact = new Contact({
+    name: req.body.name,
+    avatar: req.file ? req.file.url : undefined,
+    position: req.body.position,
+    business: req.currentUser.id,
+    linkedin: req.body.linkedin,
+  })
+
+  contact.save()
+    .then((contact) => res.status(201).json(contact))
+    .catch(next)
+}
+
+//DUDA CON LIST YA QUE ESTÁ EN VIRTUALS Y POPULADO
+
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {

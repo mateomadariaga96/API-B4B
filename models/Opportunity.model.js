@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Business = require("./Business.model");
 const OppLike = require("./OppLike.model");
+const Comment = require("./Comment.model");
+const Proposal = require("./Proposal.model");
 
 const opportunitySchema = new mongoose.Schema(
   {
@@ -50,7 +52,18 @@ opportunitySchema.virtual('likes', {
   ref: 'OppLike',
   localField: '_id',
   foreignField: 'Opportunity',
-  justOne: false,
+});
+
+opportunitySchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'Opportunity',
+});
+
+opportunitySchema.virtual('proposals', {
+  ref: 'Proposal',
+  localField: '_id',
+  foreignField: 'Opportunity',
 });
 
 const Opportunity = mongoose.model("Opportunity", opportunitySchema);

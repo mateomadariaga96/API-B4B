@@ -1,6 +1,8 @@
 const Opportunity = require("../models/Opportunity.model");
 const Business = require("../models/Business.model");
 const OppLike = require("../models/OppLike.model");
+const Comment = require("../models/Comment.model");
+const Proposal = require("../models/Proposal.model");
 
 module.exports.create = (req, res, next) => {
   const opportunity = new Opportunity({
@@ -20,14 +22,48 @@ module.exports.list = (req, res, next) => {
   Opportunity.find()
 	.sort({createdAt: -1})
 	.limit(50)
-	//.populate('business')
+	.populate('business')
 	.populate('likes')
-	//.populate('comments')
+	.populate('comments')
     .then((opportunities) => {
       res.status(200).json(opportunities);
     })
     .catch((e) => next(e));
 };
+
+module.exports.show = (req, res, next) => {
+  Opportunity.findOne({ _id: req.params.id })
+    .populate('business')
+    .populate({
+      path: 'comments',
+      options: {
+        sort: {
+          createdAt: -1
+        }
+      },
+      populate: {
+        path: 'business'
+      }
+    })
+    .then(opportunity => {
+      if (opportunity) {
+        res.json(opportunity)
+      } else {
+        throw createError(404, 'Opportunity not found');
+      }
+    })
+    .catch(next)
+}
+
+/* module.exports.deleteOpportunity = (req, res, next) => {
+    Post.findByIdAndDelete({ _id: req.params.id })
+        .then(() => {
+            res.redirect(`/user/${req.currentUser.id}/profilefeed`)
+        })
+        .catch(err => next(err))
+} */
+
+//Update Opprotunity
 
 module.exports.like = (req, res, next) => {
   const params = { opportunity: req.params.id, business: req.currentUser.id }
@@ -53,26 +89,62 @@ module.exports.like = (req, res, next) => {
     .catch(next)
 }
 
-module.exports.show = (req, res, next) => {
-  Opportunity.findOne({ _id: req.params.id })
-    .populate('business')
-    .populate({
-      path: 'comments',
-      options: {
-        sort: {
-          createdAt: -1
-        }
-      },
-      populate: {
-        path: 'business'
-      }
-    })
-    .then(opportunity => {
-      if (opportunity) {
-        res.json(opportunity)
-      } else {
-        throw createError(404, 'Opportunity not found');
-      }
-    })
+module.exports.addComment = (req, res, next) => {
+  const oppId = req.params.id
+
+  const comment = new Comment({
+    text: req.body.text,
+    business: req.currentUser.id,
+    opportunity: oppId
+  })
+  
+  comment.save()
+    .then(c => res.json(c))
     .catch(next)
 }
+
+module.exports.listComments = (req, res, next) => {
+  Comment.find()
+	.sort({createdAt: -1})
+	.limit(20)
+	.populate('business')
+	.populate('opportunities')
+    .then((comments) => {
+      res.status(200).json(comments);
+    })
+    .catch((e) => next(e));
+};
+
+//Remove Comment
+
+module.exports.createProposal = (req, res, next) => {
+  const oppId = req.params.id
+
+  const proposal = new Proposal({
+    description: req.body.description,
+    title: req.body.title,
+	status: req.body.status,
+    business: req.currentUser.id,
+    opportunity: oppId
+  })
+  
+  proposal.save()
+    .then(p => res.json(p))
+    .catch(next)
+}
+
+module.exports.listProposals = (req, res, next) => {
+  Proposal.find()
+	.sort({createdAt: -1})
+	.limit(20)
+	.populate('business')
+	.populate('opportunities')
+    .then((proposals) => {
+      res.status(200).json(proposals);
+    })
+    .catch((e) => next(e));
+};
+
+//Remove Proposal
+
+
