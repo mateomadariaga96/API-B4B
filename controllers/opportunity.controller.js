@@ -1,5 +1,5 @@
-const Opportunity = require("../models/Opportunity.model");
 const Business = require("../models/Business.model");
+const Opportunity = require("../models/Opportunity.model");
 const OppLike = require("../models/OppLike.model");
 const Comment = require("../models/Comment.model");
 const Proposal = require("../models/Proposal.model");
@@ -31,9 +31,25 @@ module.exports.list = (req, res, next) => {
     .catch((e) => next(e));
 };
 
+module.exports.listFiltered = async (req, res, next) => {
+	const businesses = await Business.find({sector: req.query.sector}, {_id: 1})
+
+  	Opportunity.find({business: {$in: businesses.map(x => x._id.toString())}})
+	.sort({createdAt: -1})
+	.limit(50)
+	.populate('business')
+	.populate('likes')
+	.populate('comments')
+    .then((opportunities) => {
+      res.status(200).json(opportunities);
+    })
+    .catch((e) => next(e));
+};
+
 module.exports.show = (req, res, next) => {
   Opportunity.findOne({ _id: req.params.id })
     .populate('business')
+	.populate('likes')
     .populate({
       path: 'comments',
       options: {
@@ -55,15 +71,24 @@ module.exports.show = (req, res, next) => {
     .catch(next)
 }
 
-/* module.exports.deleteOpportunity = (req, res, next) => {
-    Post.findByIdAndDelete({ _id: req.params.id })
+module.exports.deleteOpportunity = (req, res, next) => {
+    Opportunity.findByIdAndDelete({ _id: req.params.id })
         .then(() => {
-            res.redirect(`/user/${req.currentUser.id}/profilefeed`)
+            res.json({ message: `Opportunity with id: ${req.params.id} is removed successfully.` });
         })
         .catch(err => next(err))
-} */
+}
 
-//Update Opprotunity
+module.exports.updateOpportunity = (req, res, next) => {
+  Opportunity.findByIdAndUpdate(req.params.id, req.body)
+    .then(() => {
+      res.json({ message: `Opportunity with ${req.params.id} is updated successfully.` });
+    })
+    .catch(err => {
+      res.json(err);
+    });
+}
+
 
 module.exports.like = (req, res, next) => {
   const params = { opportunity: req.params.id, business: req.currentUser.id }
@@ -102,20 +127,6 @@ module.exports.addComment = (req, res, next) => {
     .then(c => res.json(c))
     .catch(next)
 }
-
-module.exports.listComments = (req, res, next) => {
-  Comment.find()
-	.sort({createdAt: -1})
-	.limit(20)
-	.populate('business')
-	.populate('opportunities')
-    .then((comments) => {
-      res.status(200).json(comments);
-    })
-    .catch((e) => next(e));
-};
-
-//Remove Comment
 
 module.exports.createProposal = (req, res, next) => {
   const oppId = req.params.id

@@ -27,8 +27,25 @@ module.exports.list = (req, res, next) => {
 	.populate('business')
 	.populate('productlikes')
 	.populate('reviews')
+	.populate('ratings')
     .then((products) => {
       res.status(200).json(products);
+    })
+    .catch((e) => next(e));
+};
+
+module.exports.listFiltered = async (req, res, next) => {
+	const businesses = await Business.find({sector: req.query.sector}, {_id: 1})
+
+  	Product.find({business: {$in: businesses.map(x => x._id.toString())}})
+	.sort({createdAt: -1})
+	.limit(50)
+	.populate('business')
+	.populate('productlikes')
+	.populate('reviews')
+	.populate('ratings')
+    .then((opportunities) => {
+      res.status(200).json(opportunities);
     })
     .catch((e) => next(e));
 };
@@ -68,8 +85,23 @@ module.exports.show = (req, res, next) => {
     .catch(next)
 }
 
-//Edit product
-//Remove Product
+module.exports.deleteProduct = (req, res, next) => {
+    Product.findByIdAndDelete({ _id: req.params.id })
+        .then(() => {
+            res.json({ message: `Product with id: ${req.params.id} is removed successfully.` });
+        })
+        .catch(err => next(err))
+}
+
+module.exports.updateProduct = (req, res, next) => {
+  Product.findByIdAndUpdate(req.params.id, req.body)
+    .then(() => {
+      res.json({ message: `Product with ${req.params.id} is updated successfully.` });
+    })
+    .catch(err => {
+      res.json(err);
+    });
+}
 
 module.exports.like = (req, res, next) => {
   const params = { product: req.params.id, business: req.currentUser.id }
@@ -108,20 +140,6 @@ module.exports.addReview = (req, res, next) => {
     .then(r => res.json(r))
     .catch(next)
 }
-
-module.exports.listReviews = (req, res, next) => {
-  Review.find()
-	.sort({createdAt: -1})
-	.limit(20)
-	.populate('business')
-	.populate('products')
-    .then((reviews) => {
-      res.status(200).json(reviews);
-    })
-    .catch((e) => next(e));
-};
-
-//Remove Review
 
 module.exports.addRating = (req, res, next) => {
   const productId = req.params.id

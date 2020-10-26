@@ -1,5 +1,12 @@
 const createError = require("http-errors");
 const Business = require("../models/Business.model");
+const Comment = require("../models/Comment.model");
+const Product = require("../models/Product.model");
+const Opportunity = require("../models/Opportunity.model");
+const OppLike = require("../models/OppLike.model");
+const ProductLike = require("../models/ProductLike.model");
+const Contact = require("../models/Contact.model");
+const Review = require("../models/Review.model");
 
 module.exports.create = (req, res, next) => {
   const user = new Business({
@@ -20,7 +27,14 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.list = (req, res, next) => {
-  Business.find()
+  Business.find(req.query)
+  .populate('opportunities')
+  .populate('products')
+  .populate('likes')
+  .populate('productlikes')
+  .populate('contacts')
+  .populate('comments')
+  .populate('reviews')
     .then((business) => {
       res.status(200).json(business);
     })
@@ -28,55 +42,17 @@ module.exports.list = (req, res, next) => {
 };
 
 module.exports.profile = (req, res, next) => {
-  Business.findOne({ name: req.params.name })
-    .populate({
-      path: 'opportunities',
-      populate: {
-        path: 'business'
-      }
-    })
-    .populate({
-      path: 'products',
-      populate: {
-        path: 'business'
-      }
-    })
-    .populate({
-      path: 'likes',
-      populate: {
-        path: 'business'
-      }
-    })
-    .populate({
-      path: 'productlikes',
-      populate: {
-        path: 'business'
-      }
-    })
-    .populate({
-      path: 'proposals',
-      populate: {
-        path: 'business'
-      }
-    })
-    .populate({
-      path: 'comments',
-      populate: {
-        path: 'business'
-      }
-    })
-    .populate({
-      path: 'contacts',
-      populate: {
-        path: 'business'
-      }
-    })
-    .populate({
-      path: 'reviews',
-      populate: {
-        path: 'business'
-      }
-    })
+  const {id} = req.params
+  console.log(id);
+  console.log(req.params);
+  Business.findById(id)
+    .populate('opportunities')
+    .populate('products')
+    .populate('likes')
+    .populate('productlikes')
+    .populate('contacts')
+    .populate('comments')
+    .populate('reviews')
     .then(business => {
       if (business) {
         res.json(business)
@@ -87,8 +63,25 @@ module.exports.profile = (req, res, next) => {
     .catch(next)
 }
 
+module.exports.deleteBusiness = (req, res, next) => {
+    Business.findByIdAndDelete({ _id: req.params.id })
+        .then(() => {
+            res.json({ message: `Business with id: ${req.params.id} is removed successfully.` });
+        })
+        .catch(err => next(err))
+}
+
+module.exports.updateBusiness = (req, res, next) => {
+  Business.findByIdAndUpdate(req.params.id, req.body)
+    .then(() => {
+      res.json({ message: `Business with ${req.params.id} is updated successfully.` });
+    })
+    .catch(err => {
+      res.json(err);
+    });
+}
+
 //update
-//delete
 
 module.exports.createContact = (req, res, next) => {
 

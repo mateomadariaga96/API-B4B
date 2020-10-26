@@ -93,12 +93,12 @@ businessSchema.virtual('productlikes', {
 });
 
 businessSchema.virtual('comments', {
-  ref: 'Comments',
+  ref: 'Comment',
   localField: '_id',
   foreignField: 'Business'
 });
 
-  businessSchema.virtual('contacts', {
+businessSchema.virtual('contacts', {
   ref: 'Contact',
   localField: '_id',
   foreignField: 'Business'
@@ -153,6 +153,6 @@ businessSchema.methods.checkPassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-const Business = mongoose.model("User", businessSchema);
+const Business = mongoose.model("Business", businessSchema);
 
 module.exports = Business;
