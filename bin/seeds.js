@@ -2,6 +2,12 @@ require("../config/db.config");
 const Business = require("../models/Business.model");
 const Product = require("../models/Product.model");
 const Opportunity = require("../models/Opportunity.model");
+const OppLike = require("../models/OppLike.model");
+const Comment = require("../models/Comment.model");
+const Proposal = require("../models/Proposal.model");
+const Review = require("../models/Review.model");
+const Rating = require("../models/Rating.model");
+const ProductLike = require("../models/ProductLike.model");
 const faker = require("faker");
 
 const userIds = [];
@@ -30,6 +36,7 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
       });
       user.save()
         .then((u) => {
+          userIds.push(user._id)
             console.log(u.name);
             if (user.type === "Product vendor") {
               for (let i = 0; i < 4; i++) {
@@ -44,6 +51,33 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                   .save()
                   .then((p) => {
                     console.log(p);
+                    for (let m = 0; Math.floor(Math.random() * 20); m++) {
+                      const productlike = new ProductLike({
+                        business: userIds[Math.floor(Math.random() * userIds.length)],
+                        product: p._id,
+                      });
+                      productlike.save()
+                    }
+                    
+                    for (let n = 0; Math.floor(Math.random() * 10); n++) {
+                      const review = new Review({
+                        text: faker.lorem.paragraph(),
+                        business: userIds[Math.floor(Math.random() * userIds.length)],
+                        product: p._id,
+                      });
+                      review.save()
+                      console.log(review);
+                    }
+
+                    for (let q = 0; Math.floor(Math.random() * 20); q++) {
+                      const rating = new Rating({
+                        score: Math.floor(Math.random() * 5),
+                        business: userIds[Math.floor(Math.random() * userIds.length)],
+                        product: p._id,
+                      });
+                      rating.save()
+                      console.log(rating);
+                    }
                   })
                   .catch((e) => console.log(e));
               }
@@ -54,12 +88,42 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                   title: faker.lorem.sentence(),
                   description: faker.lorem.paragraph(),
                   duration: dur[Math.floor(Math.random() * dur.length)],
-                  business: u._id,
+                  business: userIds[Math.floor(Math.random() * userIds.length)],
                 });
                 opportunity
                   .save()
                   .then((o) => {
                     console.log(o);
+                    for (let k = 0; Math.floor(Math.random() * 20); k++) {
+                      const like = new OppLike({
+                        business: userIds[Math.floor(Math.random() * userIds.length)],
+                        opportunity: o._id,
+                      });
+                      like.save()
+                    }
+                    
+
+                    for (let j = 0; Math.floor(Math.random() * 10); j++) {
+                      const comment = new Comment({
+                        text: faker.lorem.paragraph(),
+                        business: userIds[Math.floor(Math.random() * userIds.length)],
+                        opportunity: o._id,
+                      });
+                      comment.save()
+                      console.log(comment);
+                    }
+
+                    for (let l = 0; Math.floor(Math.random() * 10); l++) {
+                      const proposal = new Proposal({
+                        description: faker.lorem.paragraphs(),
+                        title: faker.lorem.sentence(),
+                        status: 'pending',
+                        business: userIds[Math.floor(Math.random() * userIds.length)],
+                        opportunity: o._id,
+                      });
+                      proposal.save()
+                      console.log(proposal);
+                    }
                   })
                   .catch((e) => console.log(e));
               }
