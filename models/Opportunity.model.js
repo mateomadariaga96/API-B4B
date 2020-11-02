@@ -36,6 +36,7 @@ const opportunitySchema = new mongoose.Schema(
   {
     timestamps: true,
     toJSON: {
+    	virtuals: true,
       transform: (document, toReturn) => {
         toReturn.id = document._id;
         delete toReturn.__v;
@@ -51,19 +52,19 @@ const opportunitySchema = new mongoose.Schema(
 opportunitySchema.virtual('likes', {
   ref: 'OppLike',
   localField: '_id',
-  foreignField: 'Opportunity',
+  foreignField: 'opportunity',
 });
 
 opportunitySchema.virtual('comments', {
   ref: 'Comment',
   localField: '_id',
-  foreignField: 'Opportunity',
+  foreignField: 'opportunity',
 });
 
 opportunitySchema.virtual('proposals', {
   ref: 'Proposal',
   localField: '_id',
-  foreignField: 'Opportunity',
+  foreignField: 'opportunity',
 });
 
 const Opportunity = mongoose.model("Opportunity", opportunitySchema);

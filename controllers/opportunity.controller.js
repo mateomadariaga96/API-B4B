@@ -23,9 +23,12 @@ module.exports.list = (req, res, next) => {
 	.sort({createdAt: -1})
 	.limit(50)
 	.populate('business')
+	.populate('contacts')
 	.populate('likes')
 	.populate('comments')
+	.populate('proposals')
     .then((opportunities) => {
+		console.log("Opp:", opportunities);
       res.status(200).json(opportunities);
     })
     .catch((e) => next(e));
@@ -40,6 +43,7 @@ module.exports.listFiltered = async (req, res, next) => {
 	.populate('business')
 	.populate('likes')
 	.populate('comments')
+	.populate('proposals')
     .then((opportunities) => {
       res.status(200).json(opportunities);
     })
@@ -49,8 +53,9 @@ module.exports.listFiltered = async (req, res, next) => {
 module.exports.show = (req, res, next) => {
   Opportunity.findOne({ _id: req.params.id })
     .populate('business')
-	.populate('likes')
-    .populate({
+	//.populate('likes')
+	.populate('proposals')
+    /* .populate({
       path: 'comments',
       options: {
         sort: {
@@ -60,10 +65,19 @@ module.exports.show = (req, res, next) => {
       populate: {
         path: 'business'
       }
-    })
+    }) */
     .then(opportunity => {
       if (opportunity) {
-        res.json(opportunity)
+		  console.log("hola");
+		  Proposal.find({opportunity: opportunity.id})
+		  .populate('opportunity')
+		  .then(proposal => {
+			  const data = { opportunity, proposal}
+			  console.log(data);
+			  res.json(data)
+			  
+		  })
+        
       } else {
         throw createError(404, 'Opportunity not found');
       }

@@ -55,7 +55,9 @@ module.exports.profile = (req, res, next) => {
     .populate('reviews')
     .then(business => {
       if (business) {
+        console.log(business);
         res.json(business)
+        
       } else {
         throw createError(404, 'business not found');
       }
@@ -106,6 +108,11 @@ module.exports.login = (req, res, next) => {
     throw createError(400, "Missing credentials"); 
   }
   Business.findOne({ email })
+  .populate('opportunities')
+  .populate('likes')
+  .populate('comments')
+  .populate('proposals')
+  .populate('contacts')
     .then((user) => {
       if (!user) {
         throw createError(400, "Wrong credentials");

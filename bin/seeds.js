@@ -37,7 +37,7 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
       user.save()
         .then((u) => {
           userIds.push(user._id)
-            console.log(u.name);
+            //console.log(u.name);
             if (user.type === "Product vendor") {
               for (let i = 0; i < 4; i++) {
                 const product = new Product({
@@ -50,7 +50,7 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                 product
                   .save()
                   .then((p) => {
-                    console.log(p);
+                    //console.log(p);
                     for (let m = 0; Math.floor(Math.random() * 20); m++) {
                       const productlike = new ProductLike({
                         business: userIds[Math.floor(Math.random() * userIds.length)],
@@ -66,7 +66,7 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                         product: p._id,
                       });
                       review.save()
-                      console.log(review);
+                      //console.log(review);
                     }
 
                     for (let q = 0; Math.floor(Math.random() * 20); q++) {
@@ -76,7 +76,7 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                         product: p._id,
                       });
                       rating.save()
-                      console.log(rating);
+                      //console.log(rating);
                     }
                   })
                   .catch((e) => console.log(e));
@@ -88,12 +88,12 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                   title: faker.lorem.sentence(),
                   description: faker.lorem.paragraph(),
                   duration: dur[Math.floor(Math.random() * dur.length)],
-                  business: userIds[Math.floor(Math.random() * userIds.length)],
+                  business: u._id,
                 });
                 opportunity
                   .save()
                   .then((o) => {
-                    console.log(o);
+                    //console.log(o);
                     for (let k = 0; Math.floor(Math.random() * 20); k++) {
                       const like = new OppLike({
                         business: userIds[Math.floor(Math.random() * userIds.length)],
@@ -110,7 +110,7 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                         opportunity: o._id,
                       });
                       comment.save()
-                      console.log(comment);
+                      //console.log(comment);
                     }
 
                     for (let l = 0; Math.floor(Math.random() * 10); l++) {

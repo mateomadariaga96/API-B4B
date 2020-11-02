@@ -9,12 +9,12 @@ const upload = require('./cloudinary.config');
 module.exports = router;
 
 // Authentication
-router.post('/login', authMiddleware.isNotAuthenticated, businessController.login)
-router.get('/logout', authMiddleware.isAuthenticated, businessController.logout)
+router.post('/login', businessController.login)
+router.post('/logout', authMiddleware.isAuthenticated, businessController.logout)
 
 //Business
 router.get('/businesses', authMiddleware.isAuthenticated, businessController.list);
-router.post('/business', authMiddleware.isNotAuthenticated, upload.single('logo'), businessController.create);
+router.post('/business', upload.single('logo'), businessController.create);
 router.get('/business/:id', authMiddleware.isAuthenticated, businessController.profile);
 router.post('/business/:id/contact', authMiddleware.isNotAuthenticated, upload.single('avatar'), businessController.createContact);
 router.delete('/business/:id/delete', authMiddleware.isAuthenticated, businessController.deleteBusiness)

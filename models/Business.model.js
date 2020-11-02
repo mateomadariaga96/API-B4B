@@ -67,6 +67,7 @@ const businessSchema = new mongoose.Schema(
   {
     timestamps: true,
     toJSON: {
+      virtuals: true,
       transform: (document, toReturn) => {
         toReturn.id = document._id;
         delete toReturn.password;
@@ -83,50 +84,50 @@ const businessSchema = new mongoose.Schema(
 businessSchema.virtual('likes', {
   ref: 'OppLike',
   localField: '_id',
-  foreignField: 'Business'
+  foreignField: 'business'
 });
 
-businessSchema.virtual('productlikes', {
+/* businessSchema.virtual('productlikes', {
   ref: 'ProductLike',
   localField: '_id',
-  foreignField: 'Business'
-});
+  foreignField: 'business'
+}); */
 
 businessSchema.virtual('comments', {
   ref: 'Comment',
   localField: '_id',
-  foreignField: 'Business'
+  foreignField: 'business'
 });
 
 businessSchema.virtual('contacts', {
   ref: 'Contact',
   localField: '_id',
-  foreignField: 'Business'
+  foreignField: 'business'
 });
 
-businessSchema.virtual('products', {
+/* businessSchema.virtual('products', {
   ref: 'Product',
   localField: '_id',
-  foreignField: 'Business',
-});
+  foreignField: 'business',
+}); */
 
 businessSchema.virtual('proposals', {
   ref: 'Proposal',
   localField: '_id',
-  foreignField: 'Business',
+  foreignField: 'business',
 });
 
 businessSchema.virtual('opportunities', {
   ref: 'Opportunity',
   localField: '_id',
-  foreignField: 'Business',
+  foreignField: 'business',
 });
 
-businessSchema.virtual('reviews', {
+/* businessSchema.virtual('reviews', {
   ref: 'Review',
   localField: '_id',
-  foreignField: 'Business',
-});
+  foreignField: 'business',
+}); */
 
 businessSchema.pre("save", function (next) {
   const user = this;
