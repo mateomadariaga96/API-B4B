@@ -11,7 +11,7 @@ const ProductLike = require("../models/ProductLike.model");
 const faker = require("faker");
 
 const userIds = [];
-const userN = 40;
+const userN = 30;
 
 Promise.all([Business.deleteMany(), Product.deleteMany()])
   .then(() => {
@@ -31,14 +31,14 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
         logo: faker.image.business(),
         size: size[Math.floor(Math.random() * size.length)],
         sector: sector[Math.floor(Math.random() * sector.length)],
-        type: type[Math.floor(Math.random() * type.length)],
+        //type: type[Math.floor(Math.random() * type.length)],
         description: faker.lorem.paragraphs(),
       });
       user.save()
         .then((u) => {
           userIds.push(user._id)
             //console.log(u.name);
-            if (user.type === "Product vendor") {
+            /* if (user.type === "Product vendor") {
               for (let i = 0; i < 4; i++) {
                 const product = new Product({
                   title: faker.commerce.productName(),
@@ -81,9 +81,9 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                   })
                   .catch((e) => console.log(e));
               }
-            } 
-            if (user.type === "Service provider") {
-              for (let i = 0; i < 2; i++) {
+            }  */
+             //if (user.type === "Service provider") {
+              for (let i = 0; Math.floor(Math.random() * 5); i++) {
                 const opportunity = new Opportunity({
                   title: faker.lorem.sentence(),
                   description: faker.lorem.paragraph(),
@@ -127,7 +127,7 @@ Promise.all([Business.deleteMany(), Product.deleteMany()])
                   })
                   .catch((e) => console.log(e));
               }
-            }
+            //}
           })
         .catch((e) => console.log(e));
       console.log(user);

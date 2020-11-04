@@ -9,13 +9,15 @@ const Contact = require("../models/Contact.model");
 const Review = require("../models/Review.model");
 
 module.exports.create = (req, res, next) => {
+  console.log(req.body);
   const user = new Business({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     logo: req.file ? req.file.url : undefined,
+    location: req.body.location,
     size: req.body.size,
-    sector: req.body.description,
+    sector: req.body.sector,
     type: req.body.type,
     web: req.body.web,
     linkedin: req.body.linkedin,

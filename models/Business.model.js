@@ -36,7 +36,7 @@ const businessSchema = new mongoose.Schema(
     },
     location: {
       type: String,
-      required: [true, "Location is required"],
+      required: [true, "Location is required"]
     },
     size: {
       type: String,
@@ -51,10 +51,10 @@ const businessSchema = new mongoose.Schema(
       default: "There is not a company description yet.",
       maxLength: 500
     },
-    type: {
+    /* type: {
       type: String,
       enum: ["Service provider", "Product vendor"],
-    },
+    }, */
     web: {
       type: String,
       default: "No website yet",

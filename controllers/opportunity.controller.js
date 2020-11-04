@@ -22,9 +22,22 @@ module.exports.list = (req, res, next) => {
   Opportunity.find()
 	.sort({createdAt: -1})
 	.limit(50)
-	.populate('business')
+	.populate({
+      path: 'business',
+      populate: {
+        path: 'opportunities'
+	  }
+    })
 	.populate('contacts')
-	.populate('likes')
+	.populate({
+      path: 'likes',
+      populate: {
+        path: 'business'
+	  },
+      populate: {
+        path: 'opportunity'
+	  }
+    })
 	.populate('comments')
 	.populate('proposals')
     .then((opportunities) => {
