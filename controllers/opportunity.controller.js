@@ -38,10 +38,15 @@ module.exports.list = (req, res, next) => {
         path: 'opportunity'
 	  }
     })
-	.populate('comments')
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'business'
+	    }
+    })
 	.populate('proposals')
     .then((opportunities) => {
-		console.log("Opp:", opportunities);
+    console.log("Opp:", opportunities);
       res.status(200).json(opportunities);
     })
     .catch((e) => next(e));

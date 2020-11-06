@@ -35,6 +35,7 @@ module.exports.list = (req, res, next) => {
   .populate('likes')
   .populate('productlikes')
   .populate('contacts')
+  .populate('proposals')
   .populate('comments')
   .populate('reviews')
     .then((business) => {
@@ -52,6 +53,7 @@ module.exports.profile = (req, res, next) => {
     .populate('products')
     .populate('likes')
     .populate('productlikes')
+    .populate('proposals')
     .populate('contacts')
     .populate('comments')
     .populate('reviews')
