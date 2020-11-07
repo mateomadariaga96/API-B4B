@@ -6,11 +6,12 @@ const Proposal = require("../models/Proposal.model");
 
 module.exports.create = (req, res, next) => {
   const opportunity = new Opportunity({
-    business: req.currentUser.name,
+    business: req.session.user.id,
     title: req.body.title,
     start: req.body.start,
     budget: req.body.budget,
     duration: req.body.duration,
+    description: req.body.description,
   })
   
   opportunity.save()
@@ -166,9 +167,9 @@ module.exports.createProposal = (req, res, next) => {
   const proposal = new Proposal({
     description: req.body.description,
     title: req.body.title,
-	status: req.body.status,
-    business: req.currentUser.id,
-    opportunity: oppId
+	  status: req.body.status,
+    business: req.body.business,
+    opportunity: req.body.opportunity
   })
   
   proposal.save()
